@@ -77,7 +77,7 @@ struct ContentView: View {
                         Image(systemName: "plus")
                         Text("Add Computer")
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: 300)
                 }
                 .buttonStyle(.borderedProminent)
 
@@ -92,4 +92,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
