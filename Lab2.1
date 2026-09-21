@@ -1,1 +1,162 @@
+import SwiftUI
+
+struct Computer: Identifiable {
+    let id = UUID()
+    var name: String
+    var location: String
+    var isAvailable: Bool
+}
+
+struct ContentView: View {
+
+    @State private var computers: [Computer] = [
+        Computer(name: "PC01", location: "Lab A", isAvailable: true),
+        Computer(name: "PC02", location: "Lab A", isAvailable: false),
+        Computer(name: "PC03", location: "Lab B", isAvailable: true),
+        Computer(name: "PC04", location: "Lab B", isAvailable: false),
+        Computer(name: "PC05", location: "Lab C", isAvailable: true)
+    ]
+
+    @State private var showAddComputer = false
+
+    var body: some View {
+
+        NavigationStack {
+
+            VStack(spacing: 15) {
+
+                Image(systemName: "desktopcomputer")
+                    .font(.system(size: 50))
+                    .foregroundColor(.blue)
+
+                Text("Computer Lab")
+                    .font(.title)
+                    .bold()
+
+                Text("Manage computers easily")
+                    .foregroundColor(.gray)
+
+                List(computers) { computer in
+
+                    HStack {
+
+                        Image(systemName: "desktopcomputer")
+                            .foregroundColor(.blue)
+
+                        VStack(alignment: .leading) {
+
+                            Text(computer.name)
+                                .font(.headline)
+
+                            Text(computer.location)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        HStack {
+
+                            Circle()
+                                .fill(computer.isAvailable ? .green : .red)
+                                .frame(width: 10, height: 10)
+
+                            Text(computer.isAvailable ? "Available" : "In Use")
+                                .font(.caption)
+                                .foregroundColor(
+                                    computer.isAvailable ? .green : .red
+                                )
+                        }
+                    }
+                }
+
+                Button(action: {
+                    showAddComputer = true
+                }) {
+
+                    HStack {
+                        Image(systemName: "plus")
+                        Text("Add Computer")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Text("Total Computers: \(computers.count)")
+                    .foregroundColor(.secondary)
+
+            }
+            .padding()
+            .navigationTitle("Computer Lab")
+            .sheet(isPresented: $showAddComputer) {
+                AddComputerView(computers: $computers)
+            }
+        }
+    }
+}
+
+struct AddComputerView: View {
+
+    @Environment(\.dismiss) var dismiss
+
+    @Binding var computers: [Computer]
+
+    @State private var computerName = ""
+    @State private var location = ""
+    @State private var isAvailable = true
+
+    var body: some View {
+
+        NavigationStack {
+
+            VStack(spacing: 20) {
+
+                Image(systemName: "desktopcomputer")
+                    .font(.system(size: 60))
+                    .foregroundColor(.blue)
+
+                TextField(
+                    "Computer Name (e.g. PC06)",
+                    text: $computerName
+                )
+                .textFieldStyle(.roundedBorder)
+
+                TextField(
+                    "Location (e.g. Lab C)",
+                    text: $location
+                )
+                .textFieldStyle(.roundedBorder)
+
+                Toggle(
+                    "Available",
+                    isOn: $isAvailable
+                )
+
+                Button("Add Computer") {
+
+                    if !computerName.isEmpty {
+
+                        let newComputer = Computer(
+                            name: computerName,
+                            location: location,
+                            isAvailable: isAvailable
+                        )
+
+                        computers.append(newComputer)
+                        dismiss()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Add Computer")
+        }
+    }
+}
+
+#Preview {
+    ContentView()
+}
 
